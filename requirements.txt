@@ -3,3 +3,7 @@ numpy
 pandas
 pydeck
 streamlit
+time
+plotly.express
+plotly
+locale
