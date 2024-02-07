@@ -5,4 +5,3 @@ pydeck
 streamlit
 plotly.express
 plotly
-locale
