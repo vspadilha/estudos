@@ -7,7 +7,7 @@ import time
 from dash import Dash
 from dash.dash_table.Format import Format, Group
 import json
-import geopandas as gpd
+
 
 
 #Configurações
