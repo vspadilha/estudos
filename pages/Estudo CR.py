@@ -90,13 +90,14 @@ with st.container(border=True):
     
     col1, col2, col3, col4 = st.columns(4)
     col1.metric('Quantidade', f'{qtd:n}')
-    #col2.metric("Média", f'{locale.currency(media, grouping=True)}')
-    #col3.metric(f"Desvio Padrão", f'{locale.currency(std, grouping=True)}')
-    #col4.metric("Mediana", f'{locale.currency(mediana, grouping=True)}')
+    col2.metric("Média", f'{locale.currency(media, grouping=True)}')
+    col3.metric(f"Desvio Padrão", f'{locale.currency(std, grouping=True)}')
+    col4.metric("Mediana", f'{locale.currency(mediana, grouping=True)}')
     
-    col2.metric("Média", f'{media:n}')
-    col3.metric(f"Desvio Padrão", f'{std:n}')
-    col4.metric("Mediana", f'{mediana:n}')
+    # Gambi para arrumar quando o Locale estava sem funcionar.
+    #col2.metric("Média", f'{media:n}')
+    #col3.metric(f"Desvio Padrão", f'{std:n}')
+    #col4.metric("Mediana", f'{mediana:n}')
 
 hist = px.histogram(filtered_df, x='Valor', height=400)
 
