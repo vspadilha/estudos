@@ -11,7 +11,8 @@ import json
 
 
 #Configurações
-locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
+#locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
+locale.setlocale(locale.LC_ALL, '')
 
 my_bar = st.progress(0, text='')
 
