@@ -4,7 +4,6 @@ import numpy as np
 import plotly.express as px
 import locale
 import time
-import seaborn as sns
 from dash import Dash
 from dash.dash_table.Format import Format, Group
 import json
