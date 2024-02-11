@@ -1,22 +1,39 @@
 import pandas as pd
 import streamlit as st
-import time
 import numpy as np
 import plotly.express as px
 import locale
+import time
+import seaborn as sns
+from dash import Dash
+from dash.dash_table.Format import Format, Group
+import json
+import geopandas as gpd
+
 
 #Configurações
 locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
+
+my_bar = st.progress(0, text='')
 
 
 #Importação de Dados
 
 @st.cache_data
 def import_data():
-    dados = pd.read_excel('datasets/dados_cr.xlsx')
+    dados = pd.read_parquet("datasets/dados.parquet.gzip") 
     return dados
 
+my_bar.progress(0, 'Carregamento')
+t_ini = time.time()
 dados = import_data()
+t_fim = time.time()
+tempo_total = (t_fim - t_ini)*1000
+my_bar.progress(100, f'Carregamento do DataFrame em {tempo_total:.2f} ms')
+memory_usage = dados.memory_usage(deep=True).sum() / (1024 * 1024)  # Convert bytes to MB
+st.text(f'Uso da memório: {memory_usage:.2f} mb')
+
+dados.info()
 
 #Limpeza de Dados
 @st.cache_data
@@ -26,63 +43,114 @@ def clean_data():
     
     #Mudando os nomes das colunas para o st.map entender
     df = df.rename(columns={'Latitude' : 'LAT', 'Longitude': 'LON'} ) 
+    
     #Coluna Valor estava com espaços
     df = df.rename(columns={' Valor ' : 'Valor'} )
     df['Valor_Correto'] = pd.to_numeric(df['Valor'])
     
-  
+    #Filtrar somente porto alegre
+    
 
     df.info()
     return df
 
 df = clean_data()
 
-
 # Gráficos
-st.title('Estudo de Caso Imobiliária')
+st.title('Estudo de Caso - Dados de Imóveis')
 
 st.subheader('Le Dataframe')
-st.dataframe(df)
+st.dataframe(df.head())
 st.caption('Dados extraídos da internet')
-st.header('Mostrando os imóveis no Mapa')
 
+st.header('Mostrando os imóveis no Mapa')
+st.text('Navegue pelos dados dos imóveis para aluguel e sua distribuição por lat e lon')
 with st.container():
-    st.map(df, size=0.5, color=[0, 255, 255])
+    df.loc[df.Valor > 15000, 'Valor'] = 15000
+    st.map(data=df, size=40, color=[0, 250, 255, 0.1])
     st.caption('Dados distribuidos sem nenhum tratamento, apenas lat e lon via MapBox')
 st.divider()
 
 ##Filtros para remover outros status
+
+st.header('Indicadores Básicos')
+
 filtered_df = df[(df['Status'] == 'Novo') | (df['Status'] == 'Dispon¡vel')]
-range_valores = st.slider('Selecione Valores', 0, int(filtered_df['Valor'].max()), 15000)
-filtered_df = filtered_df[(filtered_df['Valor'] > 300) & (filtered_df['Valor'] < range_valores)]
+range_valores = st.slider('Selecione o valor MAX do aluguel para atualizar as médias', 0, int(filtered_df['Valor'].max()),int(filtered_df['Valor'].max()))
+filtered_df = filtered_df[(filtered_df['Valor'] > 200) & (filtered_df['Valor'] < range_valores)]
 filtered_df['Valor'].count()
 
 with st.container(border=True):
     media = np.mean(filtered_df["Valor"])
     std = np.std(filtered_df['Valor'])
     mediana = np.median(filtered_df['Valor'])
+    qtd =  len(filtered_df['Name'])
     
     #Colunas com as Médias
     
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Média", f'{locale.currency(media, grouping=True)}')
-    col2.metric(f"Desvio Padrão", f'{locale.currency(std, grouping=True)}')
-    col3.metric("Mediana", f'{locale.currency(mediana, grouping=True)}')
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric('Quantidade', f'{qtd:n}')
+    col2.metric("Média", f'{locale.currency(media, grouping=True)}')
+    col3.metric(f"Desvio Padrão", f'{locale.currency(std, grouping=True)}')
+    col4.metric("Mediana", f'{locale.currency(mediana, grouping=True)}')
 
 hist = px.histogram(filtered_df, x='Valor', height=400)
 
 hist
 
+# Area de Testes
+st.divider()
 
-teste = filtered_df.copy()
+filtered_df['Status'] = filtered_df['Status'].astype('category')
+#filtered_df = filtered_df.drop('Name', axis=1)
+filtered_df = filtered_df.drop('Valor_Correto', axis=1)
+filtered_df['Tipo'] = filtered_df['Tipo'].astype('category')
+filtered_df['State'] = filtered_df['State'].astype('category')
 
-teste['CreatedAt'] = pd.to_datetime(teste['CreatedAt'])
-teste['Mes'] = teste['CreatedAt'].dt.month
-teste['Year'] = teste['CreatedAt'].dt.year
+selecao = st.selectbox('Selecione a Linha de Tendencia:',['lowess', 'rolling', 'ewm', 'expanding', 'ols'])
+fig = px.scatter(filtered_df, x='CreatedAt', y='Valor', trendline=selecao)
 
-teste2 = pd.DataFrame(teste.groupby('Mes').count())
-teste2.reset_index(inplace=True)
+fig
 
-colunas = st.selectbox('Filtrar por Colunas no DF', filtered_df.columns, index=4)
 
-st.scatter_chart(filtered_df, x='Valor', y=colunas)
+#fig2 = px.choropleth_mapbox(data_frame=filtered_df, locations='State', labels=True)
+
+#importa_geo()
+
+st.divider()
+
+st.subheader('Mapa usando o Plotly "px.scatter_mapbox"')
+st.text('Aqui tendo a lat e lon como valores, fica relativamente fácil implementar com um visual mais bonito.')
+
+colorscales = px.colors.named_colorscales()
+select_cores = st.radio('Cores: ', colorscales, 4, horizontal=True)
+
+
+fig_map = px.scatter_mapbox(filtered_df, lat='LAT', lon='LON',
+                                zoom = 12,
+                                color='Valor',
+                                size='Valor',
+                                hover_name='Name',
+                                center = {"lat":-30.03787737004909, "lon": -51.21334191009066},
+                                opacity = 0.4,
+                                #color_continuous_scale='blues',
+                                color_continuous_scale=select_cores,
+                                mapbox_style='carto-darkmatter',
+                                height=1080,
+                                width=1080,
+                                size_max=13,
+                                title='Mesmo pada de Cima, só que bonito',
+                                #animation_group='Status',
+                                #animation_frame='LAT',
+                                                                
+                                )
+
+
+
+
+st.write(fig_map)
+
+filtered_df.info()
+
+st.divider()
+
