@@ -40,30 +40,3 @@ dfp['State'] = dfp['State'].astype('category')
 
 
 
-url_mapa= 'https://raw.githubusercontent.com/tbrugz/geodata-br/master/geojson/geojs-100-mun.json'
-
-def importa_geo():
-    mapa = pd.read_json(url_mapa)
-    print(mapa.head())
-    return mapa
-
-with urlopen(url_mapa) as response:
-    counties = json.load(response)
-
-importa_geo()
-dados[' Valor '].info()
-
-fig = px.choropleth_mapbox(dados, geojson=mapa, color=' Valor ',
-                           color_continuous_scale="Viridis",
-                           range_color=(0, 12),
-                           mapbox_style="carto-positron",
-                           zoom=3, center = {"lat": 37.0902, "lon": -95.7129},
-                           opacity=0.5,
-                           labels={'unemp':'unemployment rate'}
-                          )
-fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-
-fig.show()
-
-print('FInal')
-
