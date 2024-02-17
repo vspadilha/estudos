@@ -28,14 +28,11 @@ st.set_page_config(
 
 #Title
 
-col1, col2 = st.columns([3,12])
-    
-with col1:
-        with st.container(border=True):
-                st.image('https://docs.streamlit.io/logo.svg', use_column_width=True, clamp=False)
-with col2:
-        st.header('Análise de Dados, Testes e Python')
-        st.subheader('Tentando analisar uns dados, aí pelo mundo')
+   
+
+
+st.header('Análise de Dados, Testes e Python')
+st.subheader('Tentando analisar uns dados, aí pelo mundo')
 
 st.write('https://www.linkedin.com/in/vspadilha/')
 
