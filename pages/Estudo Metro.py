@@ -24,8 +24,6 @@ st.title('Estudo de caso sobre o Metrô no RS e Mobilidade', anchor='Home')
 
 #Importar Dados
 
-#url='datasets/Dados Domicilios 2024/43_RS.zip'
-#url='c:/Users/VitorS/OneDrive/Python/Streamlit/Análise de Alugueis/datasets/Dados Domicilios 2024/43_RS.zip'
 url='datasets/dados_metro_rv2.parquet'
 url_cidades='datasets/Dados Domicilios 2024/lista_cidades.csv'
 
