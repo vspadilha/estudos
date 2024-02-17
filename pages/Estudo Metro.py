@@ -16,8 +16,8 @@ locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
 my_bar = st.progress(0.0, text='')
 
-cache = diskcache.Cache("./cache")
-background_callback_manager = DiskcacheManager(cache)
+#cache = diskcache.Cache("./cache")
+#background_callback_manager = DiskcacheManager(cache)
 
 #Configurações
 st.title('Estudo de caso sobre o Metrô no RS e Mobilidade', anchor='Home')
