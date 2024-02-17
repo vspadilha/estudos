@@ -39,12 +39,12 @@ st.write(''' Um espaço dedicado para testar apps em python, mapas, tratamento d
 
 st.write('https://www.linkedin.com/in/vspadilha/')
 
-
+st.write('---')
 
 
 
 #Gráficos
-st.header("Header 1")
 
-st.write('---')
+
+
 
