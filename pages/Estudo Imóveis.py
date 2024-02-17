@@ -33,7 +33,7 @@ my_bar.progress(100, f'Carregamento do DataFrame em {tempo_total:.2f} ms')
 memory_usage = dados.memory_usage(deep=True).sum() / (1024 * 1024)  # Convert bytes to MB
 st.text(f'Uso da memório: {memory_usage:.2f} mb')
 
-dados.info()
+#dados.info()
 
 #Limpeza de Dados
 @st.cache_data
@@ -155,7 +155,7 @@ fig_map = px.scatter_mapbox(filtered_df, lat='LAT', lon='LON',
 
 st.write(fig_map)
 
-filtered_df.info()
+#filtered_df.info()
 
 st.divider()
 
