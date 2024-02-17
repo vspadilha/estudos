@@ -97,7 +97,7 @@ fig_map = px.scatter_mapbox(df_menor_distancia, lat='LATITUDE', lon='LONGITUDE',
                                 #center = {"lat":-30.03787737004909, "lon": -51.21334191009066},
                                 opacity = 0.4,
                                 color_continuous_scale='blues',
-                                #color_continuous_scale=select_cores,
+                                color_continuous_scale=select_cores,
                                 mapbox_style='carto-darkmatter',
                                 height=1080,
                                 width=800,
@@ -113,16 +113,8 @@ fig_map = px.scatter_mapbox(df_menor_distancia, lat='LATITUDE', lon='LONGITUDE',
 
 st.write(fig_map)
 
-st.write(df_menor_distancia.columns)
-
 st.divider()
 
-
-
-bt = st.button('Reset')
-
-x = +1
-print(x)
 
 
 #df_filtered.memory_usage()
