@@ -6,10 +6,10 @@ import locale
 import time
 from dash import Dash
 from dash.dash_table.Format import Format, Group
-from dash import DiskcacheManager
+#from dash import DiskcacheManager
 import json
-import geopandas as gpd
-import diskcache
+#import geopandas as gpd
+#import diskcache
 
 #Configurações
 locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
