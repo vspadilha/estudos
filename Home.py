@@ -34,11 +34,14 @@ st.set_page_config(
 st.header('Análise de Dados, Testes e Python')
 st.subheader('Tentando analisar uns dados, aí pelo mundo')
 
+st.write(''' Um espaço dedicado para testar apps em python, mapas, tratamento de dados e testes com bibliotecas.
+            Mapas. Principalmente mapas =).''')
+
 st.write('https://www.linkedin.com/in/vspadilha/')
 
 
 
-st.write('---')
+
 
 #Gráficos
 st.header("Header 1")
