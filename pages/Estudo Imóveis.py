@@ -158,4 +158,5 @@ st.write(fig_map)
 #filtered_df.info()
 
 st.divider()
-
+st.caption('Criado e desenvolvido por Vítor S. Padilha, 2024.')
+st.caption('https://ftp.ibge.gov.br/Cadastro_Nacional_de_Enderecos_para_Fins_Estatisticos/Censo_Demografico_2022/Coordenadas_enderecos/')
